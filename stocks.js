@@ -7,7 +7,9 @@ Module.register("stocks", {
     result: [],
 	// Default module config.
 	defaults: {
-		stocks: 'MSFT,AAPL,GOOG,INTC',
+        stocks: 'MSFT,AAPL,GOOG,INTC',
+        url: 'https://api.iextrading.com/1.0/stock/',
+        token: '',
         updateInterval: 60000
 	},
 
@@ -88,18 +90,18 @@ Module.register("stocks", {
     },
 
     getStocks: function () {
-        var url = "https://api.iextrading.com/1.0/stock/" //aapl/quote";
+        // var url = "https://api.iextrading.com/1.0/stock/" //aapl/quote";
 
-        var requestUrls = [];
-        var stocksArray = this.config.stocks.split(',');
+        // var requestUrls = [];
+        // var stocksArray = this.config.stocks.split(',');
 
-        stocksArray.forEach(function(stock) {
-            var requestUrl = url + stock + "/quote";
-            requestUrls.push(requestUrl);
-        });
+        // stocksArray.forEach(function(stock) {
+        //     var requestUrl = url + stock + "/quote";
+        //     requestUrls.push(requestUrl);
+        // });
 
-        this.sendSocketNotification('GET_STOCKS_MULTI', requestUrls);
-        
+        //this.sendSocketNotification('GET_STOCKS_MULTI', requestUrls);
+        this.sendSocketNotification('GET_STOCKS_MULTI', {url: this.config.url, stocks: this.config.stocks, token: this.config.token});
     },
 
 
@@ -107,7 +109,11 @@ Module.register("stocks", {
         if (notification === "STOCKS_RESULT") {
             this.result = payload;
             this.updateDom(self.config.fadeSpeed);
-        }    
+        }
+        else if(notification === "STOCKS_RESULT_MULTI") {
+            this.result = payload;
+            this.updateDom(self.config.fadeSpeed);
+        }
     },
 
 });
